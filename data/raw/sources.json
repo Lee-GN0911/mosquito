@@ -1,0 +1,24 @@
+{
+  "mosquito": {
+    "provider": "서울특별시 보건환경연구원",
+    "page_url": "https://data.seoul.go.kr/dataList/OA-22301/F/1/datasetView.do",
+    "original_filename": "2008_2023년 유문등자료.xlsx",
+    "local_file": "mosquito_2008_2023.xlsx",
+    "download_url": "https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?&useCache=false",
+    "method": "POST",
+    "form": {
+      "infId": "OA-22301",
+      "seqNo": "",
+      "seq": "823",
+      "infSeq": "1"
+    },
+    "license": "공공누리 제1유형 출처표시",
+    "sha256": "ceca3280e49b607d15ed0851818c8f6a813c7622b8c9463451b28cdc2ad535ea",
+    "status": "downloaded; workbook contents parsed and analysis aggregates verified"
+  },
+  "font": {
+    "provider": "Google Fonts / Nanum Gothic",
+    "url": "https://github.com/google/fonts/tree/main/ofl/nanumgothic",
+    "license": "SIL Open Font License; assets/OFL.txt"
+  }
+}

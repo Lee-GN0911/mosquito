@@ -1,0 +1,31 @@
+{
+  "source_rows": 480,
+  "analysis_rows": 408,
+  "monthly_rows": 95,
+  "duplicate_keys": 0,
+  "missing_analysis_values": 0,
+  "source_issues": [
+    {
+      "year": 2017,
+      "source_row": 30,
+      "week_label": "10월 4주",
+      "issue": "partial_species_blank"
+    },
+    {
+      "year": 2010,
+      "source_row": 4,
+      "week_label": "4월 1주",
+      "issue": "all_species_blank"
+    },
+    {
+      "year": 2010,
+      "source_row": 8,
+      "week_label": "4월 5주",
+      "issue": "all_species_blank"
+    }
+  ],
+  "annual_excluded_years": [
+    2009
+  ],
+  "species_total_check": "all fully numeric species rows reconcile to source total"
+}
