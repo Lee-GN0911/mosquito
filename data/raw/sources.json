@@ -16,6 +16,17 @@
     "sha256": "ceca3280e49b607d15ed0851818c8f6a813c7622b8c9463451b28cdc2ad535ea",
     "status": "downloaded; workbook contents parsed and analysis aggregates verified"
   },
+  "weather": {
+    "provider": "기상청",
+    "page_url": "https://apihub.kma.go.kr/apiList.do?seqApi=2",
+    "api": "종관기상관측(ASOS) 일자료(기간 조회), kma_sfcdd3.php",
+    "station": "서울(108)",
+    "period": "2008-01-01/2023-12-31",
+    "local_files": "weather_api/seoul_asos_2008.txt ... seoul_asos_2023.txt",
+    "variables": ["TA_AVG", "TA_MAX", "RN_DAY", "HM_AVG"],
+    "authentication": "API key required for recollection; key is never stored in this file or Git",
+    "status": "downloaded; 5844 daily rows and 56 fields per row verified"
+  },
   "font": {
     "provider": "Google Fonts / Nanum Gothic",
     "url": "https://github.com/google/fonts/tree/main/ofl/nanumgothic",

@@ -1,6 +1,6 @@
 # mosquito
 
-분석 내용은 [report.md](report.md)에 있다. 현재 배포본은 **업데이트 1: 모기 관측량 분석**이다. 기상 자료와의 관계 분석은 포함되지 않는다.
+분석 내용은 [report.md](report.md)에 있다. 현재 배포본은 **업데이트 2: 모기 관측량과 날씨의 관계 분석**이다.
 
 ## 먼저 결과 보기
 
@@ -24,7 +24,7 @@ python3 -m venv .venv
 .venv/bin/python analysis.py
 ```
 
-`analysis.py`는 원본 엑셀에서 CSV 4개·검사 기록·그래프 3개를 다시 만든다. `report.md`의 해석 문장은 덮어쓰지 않는다. 원본이 바뀌면 수치와 해석을 검토하여 보고서도 함께 수정해야 한다.
+`analysis.py`는 모기 원본 엑셀과 기상청 ASOS 일자료에서 정제 CSV·검사 기록·그래프 6개를 다시 만든다. `report.md`의 해석 문장은 덮어쓰지 않는다. 원본이 바뀌면 수치와 해석을 검토하여 보고서도 함께 수정해야 한다.
 
 ## 파일
 
@@ -32,12 +32,14 @@ python3 -m venv .venv
 |---|---|
 | analysis.py | 정제, 집계, 시각화 |
 | collect_data.py | 포함된 원본이 없을 때 공식 파일 재수집 |
+| collect_weather.py | `.env` 인증키로 기상청 서울 일자료 재수집 |
+| run_weather.bat | Windows용 기상자료 수집 실행 파일 |
 | data/raw/ | 공식 원본과 출처 기록 |
-| data/processed/ | 원본 전체 주차·5~10월 주차·월별·연도별 CSV와 정제 검사 |
-| images/ | 보고서에 포함한 그래프 3개 |
+| data/processed/ | 모기·기상 정제자료, 월별 결합자료와 상관 계산 결과 |
+| images/ | 보고서에 포함한 그래프 6개 |
 | assets/ | 한글 그래프용 나눔고딕과 OFL 라이선스 |
 
-원본 엑셀을 이미 포함했으므로 일반 실행에는 인터넷이 필요 없다(최초 라이브러리 설치 제외). 원본 파일을 잃어버렸을 때만 `collect_data.py`를 실행한다. 제공 사이트 연결 실패 또는 파일 변경 시 오류를 알리고 중단한다.
+두 원본을 이미 포함했으므로 일반 실행에는 인터넷이 필요 없다(최초 라이브러리 설치 제외). 재수집할 때만 `collect_data.py` 또는 `collect_weather.py`를 실행한다. 기상청 인증키는 `.env`에 `KMA_AUTH_KEY=...` 형식으로 저장하며 Git에 포함하지 않는다.
 
 ## 업데이트 적용
 
@@ -45,6 +47,6 @@ python3 -m venv .venv
 
 ## 출처와 이용 조건
 
-서울특별시 보건환경연구원, [서울시 감염병매개 모기 개체수 및 종별 분류 결과](https://data.seoul.go.kr/dataList/OA-22301/F/1/datasetView.do), 공공누리 제1유형(출처표시). 원본과 재수집 요청 정보·SHA256은 `data/raw/sources.json`에 기록했다.
+서울특별시 보건환경연구원, [서울시 감염병매개 모기 개체수 및 종별 분류 결과](https://data.seoul.go.kr/dataList/OA-22301/F/1/datasetView.do), 공공누리 제1유형(출처표시). 기상자료는 [기상청 API허브 종관기상관측(ASOS)](https://apihub.kma.go.kr/apiList.do?seqApi=2)의 서울(108) 일자료다. 출처와 재수집 방법은 `data/raw/sources.json`에 기록했다.
 
 한글 글꼴은 Google Fonts에서 배포하는 Nanum Gothic이다. 재배포 조건은 `assets/OFL.txt`를 참고한다.

@@ -1,0 +1,7 @@
+﻿weather_metric,spearman_overall,spearman_within_month,observations
+avg_temp,0.317291,0.149608,95
+avg_max_temp,0.298741,0.121099,95
+peak_temp,0.167197,0.053358,95
+rainfall,0.212740,-0.016056,95
+avg_humidity,0.361080,-0.070011,95
+heatwave_days,0.187869,-0.081960,95

@@ -27,5 +27,11 @@
   "annual_excluded_years": [
     2009
   ],
-  "species_total_check": "all fully numeric species rows reconcile to source total"
+  "species_total_check": "all fully numeric species rows reconcile to source total",
+  "weather_daily_rows": 5844,
+  "weather_monthly_rows": 96,
+  "combined_monthly_rows": 95,
+  "weather_station": 108,
+  "weather_daily_field_count": 56,
+  "weather_rain_minus9_rule": "treated as zero precipitation; other selected -9 values treated as missing"
 }

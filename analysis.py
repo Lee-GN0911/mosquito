@@ -19,6 +19,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parent
 RAW = ROOT / "data/raw/mosquito_2008_2023.xlsx"
+WEATHER_RAW = ROOT / "data/raw/weather_api"
 OUT = ROOT / "data/processed"
 IMAGES = ROOT / "images"
 BLUE, ORANGE, GRAY = "#26718C", "#D16B3C", "#9BA7B0"
@@ -97,6 +98,56 @@ def aggregate(weekly):
     return monthly, annual.merge(seasons.reset_index(), on="year", validate="one_to_one")
 
 
+def read_weather():
+    """기상청 ASOS 서울(108) 일자료에서 분석에 필요한 다섯 요소만 읽는다."""
+    rows = []
+    for path in sorted(WEATHER_RAW.glob("seoul_asos_*.txt")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not (len(line) >= 8 and line[:8].isdigit()):
+                continue
+            values = line.split()
+            if len(values) != 56:
+                raise ValueError(f"기상자료 열 수 확인 필요: {path.name} {values[0]}")
+            rows.append({"date": values[0], "station_id": values[1],
+                         "avg_temp": values[10], "max_temp": values[11],
+                         "avg_humidity": values[18], "rainfall_raw": values[38]})
+    weather = pd.DataFrame(rows)
+    if len(weather) != 5844:
+        raise ValueError(f"기상 일자료는 5,844행이어야 합니다: 현재 {len(weather):,}행")
+    weather["date"] = pd.to_datetime(weather.date, format="%Y%m%d")
+    for col in ["avg_temp", "max_temp", "avg_humidity", "rainfall_raw"]:
+        weather[col] = pd.to_numeric(weather[col], errors="raise")
+    weather["rainfall"] = weather.rainfall_raw.mask(weather.rainfall_raw.eq(-9), 0)
+    weather[["avg_temp", "max_temp", "avg_humidity"]] = weather[
+        ["avg_temp", "max_temp", "avg_humidity"]].mask(lambda x: x.eq(-9))
+    weather["heatwave_day"] = weather.max_temp.ge(33)
+    weather["year"], weather["month"] = weather.date.dt.year, weather.date.dt.month
+    selected = weather[weather.month.between(5, 10)].copy()
+    monthly = selected.groupby(["year", "month"], as_index=False).agg(
+        avg_temp=("avg_temp", "mean"), avg_max_temp=("max_temp", "mean"),
+        peak_temp=("max_temp", "max"), rainfall=("rainfall", "sum"),
+        avg_humidity=("avg_humidity", "mean"), heatwave_days=("heatwave_day", "sum"),
+        weather_days=("date", "size"))
+    return weather, monthly
+
+
+def combine_weather(mosquito_monthly, weather_monthly):
+    combined = mosquito_monthly.merge(weather_monthly, on=["year", "month"], validate="one_to_one")
+    if len(combined) != len(mosquito_monthly):
+        raise ValueError("모기와 기상 월자료의 결합 행 수가 다릅니다.")
+    metrics = ["avg_temp", "avg_max_temp", "peak_temp", "rainfall", "avg_humidity", "heatwave_days"]
+    stats = []
+    for metric in metrics:
+        overall = combined.mosquito_mean.corr(combined[metric], method="spearman")
+        # 월별 계절성을 제거한 뒤 순위상관: 같은 달 안에서 연도 차이를 비교한다.
+        mosquito_rank = combined.groupby("month").mosquito_mean.rank()
+        metric_rank = combined.groupby("month")[metric].rank()
+        within_month = mosquito_rank.corr(metric_rank)
+        stats.append({"weather_metric": metric, "spearman_overall": overall,
+                      "spearman_within_month": within_month, "observations": len(combined)})
+    return combined, pd.DataFrame(stats)
+
+
 def style():
     font = ROOT / "assets/NanumGothic-Regular.ttf"
     font_manager.fontManager.addfont(str(font))
@@ -116,7 +167,7 @@ def save(fig, name, note):
     plt.close(fig)
 
 
-def make_charts(weekly, monthly, annual):
+def make_charts(weekly, monthly, annual, combined, correlations):
     style()
     # 원본에 실제 날짜가 없으므로 연도+월+월내 주차 순서를 표시한다.
     fig, ax = plt.subplots(figsize=(14, 4.8), layout="constrained")
@@ -165,22 +216,80 @@ def make_charts(weekly, monthly, annual):
     fig.supylabel("월별 평균 주간 포집량 · 전체 종 (마리)")
     save(fig, "03_monthly_counts.png", "모든 연도의 세로축 범위가 같음. 막대는 월별 관측 주의 평균. 자료가 없는 달은 0이 아님.")
 
+    annual_weather = combined.groupby("year", as_index=False).agg(
+        avg_temp=("avg_temp", "mean"), heatwave_days=("heatwave_days", "sum"))
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 7.5), sharex=True, layout="constrained")
+    ax1.plot(annual_weather.year, annual_weather.avg_temp, color=ORANGE, marker="o", lw=2.2)
+    for row in annual_weather.itertuples():
+        ax1.text(row.year, row.avg_temp + .08, f"{row.avg_temp:.1f}", ha="center", fontsize=9)
+    ax1.set(title="5~10월 평균기온은 어떻게 변했을까?", ylabel="평균기온 (도)")
+    ax1.grid(axis="y", alpha=.16)
+    ax2.bar(annual_weather.year, annual_weather.heatwave_days, color="#D99163", width=.65)
+    ax2.set(title="같은 기간 최고기온 33도 이상인 날은 얼마나 있었을까?", ylabel="폭염 기준일 수", xlabel="연도")
+    ax2.set_xticks(annual_weather.year)
+    ax2.yaxis.set_major_locator(MaxNLocator(integer=True))
+    ax2.grid(axis="y", alpha=.16)
+    save(fig, "04_temperature_trend.png", "출처: 기상청 ASOS 서울(108) 일자료. 평균기온은 5~10월 일평균기온의 평균, 폭염 기준일은 일최고기온 33도 이상.")
+
+    plot_data = combined.copy()
+    plot_data["x"] = plot_data.year + (plot_data.month - 1) / 12
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 7.5), sharex=True, layout="constrained")
+    for year, part in plot_data.groupby("year"):
+        ax1.plot(part.x, part.mosquito_mean, color=BLUE, marker="o", lw=1.5)
+        ax2.plot(part.x, part.avg_temp, color=ORANGE, marker="o", lw=1.5)
+    ax1.set(title="같은 달의 모기 관측량과 기온을 나란히 보면", ylabel="월평균 주간 포집량 (마리)")
+    ax2.set(ylabel="월평균기온 (도)", xlabel="연도 · 5~10월", xticks=range(2008, 2024))
+    ax1.grid(axis="y", alpha=.16); ax2.grid(axis="y", alpha=.16)
+    save(fig, "05_mosquito_temperature_timeline.png", "각 연도 안에서 5~10월만 연결함. 모기 원자료에는 정확한 날짜가 없어 월 단위로 결합함.")
+
+    labels = [("avg_temp", "월평균기온 (도)"), ("rainfall", "월강수량 (mm)"),
+              ("avg_humidity", "월평균 상대습도 (%)")]
+    stat_map = correlations.set_index("weather_metric")
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.8), layout="constrained")
+    colors = np.where(combined.month.ge(9), ORANGE, BLUE)
+    for ax, (metric, label) in zip(axes, labels):
+        ax.scatter(combined[metric], combined.mosquito_mean, c=colors, alpha=.72, s=35)
+        clean = combined[[metric, "mosquito_mean"]].dropna()
+        slope, intercept = np.polyfit(clean[metric], clean.mosquito_mean, 1)
+        xs = np.linspace(clean[metric].min(), clean[metric].max(), 100)
+        ax.plot(xs, slope * xs + intercept, color="#475761", lw=1.4, ls="--")
+        row = stat_map.loc[metric]
+        ax.set(title=f"전체 상관={row.spearman_overall:.2f} · 월통제={row.spearman_within_month:.2f}",
+               xlabel=label)
+        ax.grid(alpha=.14)
+    axes[0].set_ylabel("월평균 주간 포집량 (마리)")
+    fig.suptitle("기온만으로 충분할까? 강수량·습도와 함께 비교", fontsize=17)
+    fig.legend(handles=[Patch(color=BLUE, label="5~8월"), Patch(color=ORANGE, label="9~10월")],
+               loc="lower right", ncol=2, frameon=False)
+    save(fig, "06_weather_relationships.png", "점 1개는 연도·월 1개. 상관은 스피어만 순위상관. ‘월통제’는 달별 순위를 사용해 계절 차이를 줄인 탐색값이며 인과효과가 아님.")
+
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     IMAGES.mkdir(parents=True, exist_ok=True)
     all_rows, weekly, issues = read_mosquito()
     monthly, annual = aggregate(weekly)
+    weather_daily, weather_monthly = read_weather()
+    combined, correlations = combine_weather(monthly, weather_monthly)
     for name, frame in [("mosquito_all_weeks.csv", all_rows), ("mosquito_may_oct.csv", weekly),
                         ("mosquito_monthly.csv", monthly), ("mosquito_annual.csv", annual)]:
+        frame.to_csv(OUT / name, index=False, encoding="utf-8-sig", float_format="%.6f")
+    for name, frame in [("weather_daily.csv", weather_daily), ("weather_monthly.csv", weather_monthly),
+                        ("mosquito_weather_monthly.csv", combined), ("weather_correlations.csv", correlations)]:
         frame.to_csv(OUT / name, index=False, encoding="utf-8-sig", float_format="%.6f")
     audit = {"source_rows": len(all_rows), "analysis_rows": len(weekly), "monthly_rows": len(monthly),
              "duplicate_keys": 0, "missing_analysis_values": 0, "source_issues": issues,
              "annual_excluded_years": annual.loc[~annual.complete_months, "year"].tolist(),
-             "species_total_check": "all fully numeric species rows reconcile to source total"}
+             "species_total_check": "all fully numeric species rows reconcile to source total",
+             "weather_daily_rows": len(weather_daily), "weather_monthly_rows": len(weather_monthly),
+             "combined_monthly_rows": len(combined), "weather_station": 108,
+             "weather_daily_field_count": 56,
+             "weather_rain_minus9_rule": "treated as zero precipitation; other selected -9 values treated as missing"}
     (OUT / "quality_check.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8")
-    make_charts(weekly, monthly, annual)
-    print(f"완료: 주간 {len(weekly)}행, 월별 {len(monthly)}행, 그래프 3개")
+    make_charts(weekly, monthly, annual, combined, correlations)
+    print(f"완료: 모기 주간 {len(weekly)}행, 결합 월별 {len(combined)}행, 그래프 6개")
+    print("\n기상요소와 모기 관측량의 스피어만 상관")
+    print(correlations.round(3).to_string(index=False))
     print(annual.round(2).to_string(index=False))
 
 
