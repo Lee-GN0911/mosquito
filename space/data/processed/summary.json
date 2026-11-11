@@ -1,0 +1,35 @@
+{
+  "last_launch_in_data": "2026 Sep 28 1248:59",
+  "rides_matched": "1607/1657",
+  "base_year": 2000,
+  "base": {
+    "launches": 85.0,
+    "people": 37.0,
+    "crewed_orbital_launches": 7.0
+  },
+  "2025": {
+    "launches": 325.0,
+    "spacex": 167.0,
+    "without_spacex": 158.0,
+    "people": 70.0,
+    "orbital": 28.0,
+    "suborbital": 42.0,
+    "crewed_orbital_launches": 8.0,
+    "new_people": 58.0,
+    "crewed_share_pct": 2.5
+  },
+  "launch_ratio_vs_base": 3.82,
+  "people_ratio_vs_base": 1.89,
+  "forecast": {
+    "launches_2030": 868,
+    "launch_growth": 0.217,
+    "people_2030": 31,
+    "people_growth": 0.023
+  },
+  "weighted_cost": {
+    "base": 22206,
+    "2025": 6243,
+    "coverage_2025_pct": 75.4,
+    "min_coverage_since_1967_pct": 44.5
+  }
+}

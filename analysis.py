@@ -264,6 +264,127 @@ def make_charts(weekly, monthly, annual, combined, correlations):
     save(fig, "06_weather_relationships.png", "점 1개는 연도·월 1개. 상관은 스피어만 순위상관. ‘월통제’는 달별 순위를 사용해 계절 차이를 줄인 탐색값이며 인과효과가 아님.")
 
 
+def make_rain_chart(combined, correlations):
+    """같은 달의 모기 관측량과 강수량을 위아래로 나란히 그린다 (05번 기온 그래프와 같은 형식)."""
+    style()
+    plot_data = combined.copy()
+    plot_data["x"] = plot_data.year + (plot_data.month - 1) / 12
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 7.5), sharex=True, layout="constrained")
+    for year, part in plot_data.groupby("year"):
+        ax1.plot(part.x, part.mosquito_mean, color=BLUE, marker="o", lw=1.5)
+        ax2.plot(part.x, part.rainfall, color="#3E8FB0", marker="o", lw=1.5)
+    row = correlations.set_index("weather_metric").loc["rainfall"]
+    ax1.set(title="같은 달의 모기 관측량과 강수량을 나란히 보면", ylabel="월평균 주간 포집량 (마리)")
+    ax2.set(ylabel="월강수량 (mm)", xlabel="연도 · 5~10월", xticks=range(2008, 2024))
+    ax1.tick_params(labelbottom=True)
+    ax1.grid(axis="y", alpha=.16); ax2.grid(axis="y", alpha=.16)
+    save(fig, "07_mosquito_rainfall_timeline.png",
+         f"출처: 서울시 유문등 채집 자료, 기상청 ASOS 서울(108). 스피어만 상관: 전체 {row.spearman_overall:.2f}, "
+         f"같은 달끼리 비교 {row.spearman_within_month:.2f}.")
+
+
+def make_comovement_charts(combined):
+    """기온·강수량 비교 그래프에 '같이 움직인 구간'과 '따로 움직인 구간'을 칠해 보여준다.
+    구간은 월별 표에서 직접 확인했다 (발표 슬라이드 18·19번용)."""
+    style()
+    plot_data = combined.copy()
+    plot_data["x"] = plot_data.year + (plot_data.month - 1) / 12
+    specs = [
+        ("avg_temp", "월평균기온 (도)", ORANGE, "09_mosquito_temperature_spans.png",
+         (2008, 2010, "기온과 같이 오르내림"), (2019, 2021, "10월 기온이 떨어져도 모기는 늘어남")),
+        ("rainfall", "월강수량 (mm)", "#3E8FB0", "10_mosquito_rainfall_spans.png",
+         (2008, 2009, "비가 가장 많은 달에 모기도 가장 많음"), (2020, 2022, "비가 가장 많은 달에 모기는 줄어듦")),
+    ]
+    for metric, label, color, name, same, diff in specs:
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 7.5), sharex=True, layout="constrained")
+        for (a, b, text), shade, tcolor in [(same, "#DCEBF2", BLUE), (diff, "#FBE3D6", ORANGE)]:
+            for ax in (ax1, ax2):
+                ax.axvspan(a + .25, b + .95, color=shade, zorder=0, lw=0)
+            ax1.text((a + b + 1.2) / 2, 1290, text, ha="center", fontsize=11.5, color=tcolor, weight="bold")
+        for year, part in plot_data.groupby("year"):
+            ax1.plot(part.x, part.mosquito_mean, color=BLUE, marker="o", lw=1.5)
+            ax2.plot(part.x, part[metric], color=color, marker="o", lw=1.5)
+        ax1.set(ylabel="월평균 주간 포집량 (마리)", ylim=(0, 1400))
+        ax2.set(ylabel=label, xlabel="연도 · 5~10월", xticks=range(2008, 2024))
+        ax1.tick_params(labelbottom=True)
+        ax1.grid(axis="y", alpha=.16); ax2.grid(axis="y", alpha=.16)
+        fig.savefig(IMAGES / name, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
+def make_peak_shift_chart(annual):
+    """해마다 모기가 가장 많았던 달, 그리고 가을(9~10월)÷여름(6~8월) 비율 (발표 슬라이드 20번용)."""
+    style()
+    a = annual.copy()
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True, layout="constrained")
+    ax1.plot(a.year, a.peak_month, color=BLUE, marker="o", lw=2, ms=7)
+    ax1.set_yticks(range(5, 11), [f"{m}월" for m in range(5, 11)])
+    ax1.set_ylim(5.5, 10.5)
+    ax1.set_title("해마다 모기가 가장 많았던 달", loc="left", fontsize=14)
+    r = a.dropna(subset=["autumn_summer_ratio"])
+    ax2.axhline(1, color=GRAY, lw=1.2, ls="--")
+    ax2.plot(r.year, r.autumn_summer_ratio, color=ORANGE, marker="o", lw=2, ms=7)
+    ax2.text(2007.6, .1, "점선(1)보다 위면 가을 모기가 더 많음", fontsize=10.5, color="#60717C")
+    ax2.set_title("가을(9~10월) ÷ 여름(6~8월) 월평균 포집량", loc="left", fontsize=14)
+    ax2.set_ylim(0, 1.9)
+    ax2.set_xticks(range(2008, 2024, 2))
+    ax1.tick_params(labelbottom=True)
+    ax1.grid(axis="y", alpha=.16); ax2.grid(axis="y", alpha=.16)
+    fig.savefig(IMAGES / "11_peak_shift.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
+def make_dataset_overview(all_rows):
+    """원본 엑셀 한 시트의 모습과, 연도·월별로 기록이 있는 칸을 한 장에 보여준다."""
+    style()
+    book = openpyxl.load_workbook(RAW, data_only=True)
+    rows = list(book["2015"].values)
+    header, names = rows[2], rows[3]
+    keep = [1, 4, 12, 10, len(header) - 1]  # 채집일, 빨간집모기, 한국숲모기, 흰줄숲모기, 모기 계
+    cols = ["채집일"] + [names[i] for i in keep[1:-1]] + ["…", "모기 계"]
+    body = [r for r in rows[4:] if r[1] and "주" in str(r[1])]
+    pick = body[:5] + [None] + body[-3:]
+    cells = [["⋮"] * len(cols) if r is None else
+             [str(r[1])] + [f"{r[i]:,}" for i in keep[1:-1]] + ["…", f"{r[keep[-1]]:,}"] for r in pick]
+
+    fig = plt.figure(figsize=(15, 6.2))
+    ax = fig.add_axes([0.0, 0.08, 0.47, 0.8])
+    ax.axis("off")
+    ax.set_title("원본 엑셀 · 2015년 시트 (일부)", loc="left", fontsize=18)
+    table = ax.table(cellText=cells, colLabels=cols, loc="upper left", cellLoc="center", bbox=[0, 0, 1, 1])
+    table.auto_set_font_size(False)
+    table.set_fontsize(15)
+    for (r, c), cell in table.get_celld().items():
+        cell.set_edgecolor("#D5DCE1")
+        if r == 0:
+            cell.set_facecolor("#E9EEF1"); cell.set_text_props(weight="bold", color="#334550")
+        elif c == 0 and r in (1, len(pick)):
+            cell.set_facecolor("#FCE5D6"); cell.set_text_props(weight="bold", color=ORANGE)
+
+    ax = fig.add_axes([0.55, 0.12, 0.44, 0.76])
+    have = all_rows.groupby(["year", "month"]).size().unstack(fill_value=0).reindex(columns=range(1, 13), fill_value=0)
+    years = have.index.tolist()
+    for i, y in enumerate(years):
+        for m in range(1, 13):
+            used = 5 <= m <= 10 and have.loc[y, m] > 0
+            color = BLUE if used else ("#9FC3D2" if have.loc[y, m] > 0 else "#F1F3F5")
+            ax.add_patch(plt.Rectangle((m - .45, i - .4), .9, .8, color=color, lw=0))
+    ax.set_xlim(.5, 12.5); ax.set_ylim(len(years) - .5, -.5)
+    ax.set_xticks(range(1, 13), [f"{m}월" for m in range(1, 13)], fontsize=13)
+    ax.set_yticks(range(len(years)), years, fontsize=13)
+    ax.tick_params(length=0)
+    for s in ax.spines.values():
+        s.set_visible(False)
+    ax.grid(False)
+    ax.set_title("연도·월별로 기록이 있는 칸", loc="left", fontsize=18)
+    fig.legend(handles=[Patch(color=BLUE, label="기록 있음 · 분석에 사용(5~10월)"),
+                        Patch(color="#9FC3D2", label="기록 있음 · 해마다 있지는 않음"),
+                        Patch(color="#F1F3F5", label="기록 없음")],
+               loc="lower right", bbox_to_anchor=(.99, -.01), ncol=3, frameon=False, fontsize=13)
+    fig.savefig(IMAGES / "08_dataset_overview.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     IMAGES.mkdir(parents=True, exist_ok=True)
@@ -287,7 +408,11 @@ def main():
              "weather_rain_minus9_rule": "treated as zero precipitation; other selected -9 values treated as missing"}
     (OUT / "quality_check.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8")
     make_charts(weekly, monthly, annual, combined, correlations)
-    print(f"완료: 모기 주간 {len(weekly)}행, 결합 월별 {len(combined)}행, 그래프 6개")
+    make_rain_chart(combined, correlations)
+    make_dataset_overview(all_rows)
+    make_comovement_charts(combined)
+    make_peak_shift_chart(annual)
+    print(f"완료: 모기 주간 {len(weekly)}행, 결합 월별 {len(combined)}행, 그래프 11개")
     print("\n기상요소와 모기 관측량의 스피어만 상관")
     print(correlations.round(3).to_string(index=False))
     print(annual.round(2).to_string(index=False))

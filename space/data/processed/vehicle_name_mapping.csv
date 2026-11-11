@@ -1,0 +1,208 @@
+﻿owid,LV_Type,launches
+Angara,Angara A5,3
+Angara,Angara A5/Orion,1
+Angara,Angara A5/Persei,1
+Angara,Angara-1.2,7
+Antares,Antares 110,2
+Antares,Antares 120,2
+Antares,Antares 130,1
+Antares,Antares 230,5
+Antares,Antares 230+,8
+Ariane 44,Ariane 44L,40
+Ariane 44,Ariane 44LP,26
+Ariane 44,Ariane 44P,15
+Ariane 5G,Ariane 5G,15
+Ariane 5G,Ariane 5G+,2
+Ariane 5G,Ariane 5GS,6
+Athena 1,Athena-1,2
+Atlas Centaur,Atlas Centaur,4
+Atlas Centaur,Atlas Centaur D,1
+Atlas Centaur,Atlas G Centaur,7
+Atlas Centaur,Atlas SLV-3C Centaur,10
+Atlas Centaur,Atlas SLV-3D Centaur,28
+Atlas II,Atlas II,10
+Atlas II,Atlas IIA,23
+Atlas II,Atlas IIAS,29
+Atlas V,Atlas V 401,32
+Atlas V,Atlas V 411,4
+Atlas V,Atlas V 421,9
+Atlas V,Atlas V 431,3
+Atlas V,Atlas V 501,6
+Atlas V,Atlas V 511,1
+Atlas V,Atlas V 521,2
+Atlas V,Atlas V 531,5
+Atlas V,Atlas V 541,7
+Atlas V,Atlas V 551,21
+Atlas V,Atlas V N22,3
+Delta 3000-Series,Delta 3913,1
+Delta 3000-Series,Delta 3914,12
+Delta 3000-Series,Delta 3920,3
+Delta 3000-Series,Delta 3920-8,1
+Delta 3000-Series,Delta 3920/PAM,6
+Delta 3000-Series,Delta 3924,5
+Delta 3910,Delta 3910,3
+Delta 3910,Delta 3910/PAM,7
+Delta E,Thor Delta E,5
+Delta E,Thor Delta E1,12
+Delta II,Delta 6920-10,2
+Delta II,Delta 6920-8,1
+Delta II,Delta 6925,12
+Delta II,Delta 6925-8,1
+Delta II,Delta 7320-10,4
+Delta II,Delta 7320-10C,8
+Delta II,Delta 7326-9.5,1
+Delta II,Delta 7420-10C,14
+Delta II,Delta 7920-10,6
+Delta II,Delta 7920-10C,20
+Delta II,Delta 7920-10L,2
+Delta II,Delta 7920H,1
+Delta II,Delta 7925,32
+Delta II,Delta 7925-10,1
+Delta II,Delta 7925-8,1
+Delta II,Delta 7925-9.5,24
+Delta III,Delta 8930,3
+Delta IV,Delta 4M,3
+Delta IV,"Delta 4M+(4,2)",15
+Delta IV,"Delta 4M+(5,2)",3
+Delta IV,"Delta 4M+(5,4)",8
+Delta IV Heavy,Delta 4H,15
+Dnepr,Dnepr,22
+Electron,Electron,89
+Epsilon,Epsilon,6
+Falcon 1,Falcon 1,5
+Falcon 9,Falcon 9,690
+Falcon Heavy,Falcon Heavy,10
+GSLV,GSLV Mk I,6
+GSLV,GSLV Mk II,14
+H-II,H-II,7
+Kosmos,Kosmos 11K63,126
+Kosmos,Kosmos 11K65,4
+Kosmos,Kosmos 11K65M,446
+Kosmos,Kosmos 63S1,38
+Kosmos,Kosmos 65S3,8
+Kuaizhou,Kuaizhou-11,7
+Kuaizhou,Kuaizhou-1A,31
+LVM3,GSLV Mk III,2
+LVM3,LVM3,5
+Long March 11,Chang Zheng 11,18
+Long March 2A,Chang Zheng 2,2
+Long March 2C,Chang Zheng 2C,75
+Long March 2C,Chang Zheng 2C-III/SD,7
+Long March 2C,Chang Zheng 2C/YZ-1S,9
+Long March 2D,Chang Zheng 2D,102
+Long March 2D,Chang Zheng 2D/YZ-3,4
+Long March 2E,Chang Zheng 2E,7
+Long March 3A,Chang Zheng 3A,26
+Long March 3B,Chang Zheng 3B,99
+Long March 3B,Chang Zheng 3B/YZ-1,15
+Long March 4B,Chang Zheng 4B,59
+Long March 5,Chang Zheng 5,7
+Long March 5,Chang Zheng 5/YZ-2,1
+Long March 5,Chang Zheng 5B,4
+Long March 5,Chang Zheng 5B/YZ-2,3
+M-V,M-V,5
+Minotaur I,Minotaur I,12
+Minotaur IV,Minotaur IV,6
+Minotaur IV,Minotaur IV+,1
+PSLV,PSLV,30
+PSLV,PSLV-DL,5
+PSLV,PSLV-QL,2
+PSLV,PSLV-XL,25
+Pegasus,Pegasus,4
+Pegasus,Pegasus H,4
+Pegasus XL,Pegasus XL,29
+Pegasus XL,Pegasus XL/HAPS,6
+Proton,Proton-K,29
+Proton,Proton-K/17S40,6
+Proton,Proton-K/Briz-M,4
+Proton,Proton-K/D,16
+Proton,Proton-K/D-1,3
+Proton,Proton-K/D-2,1
+Proton,Proton-K/DM,66
+Proton,Proton-K/DM-2,111
+Proton,Proton-K/DM-2M,40
+Proton,Proton-M,1
+Proton,Proton-M/Briz-M,100
+Proton,Proton-M/DM-2,6
+Proton,Proton-M/DM-3,8
+R-36 / Cyclone,R-36O 8K69,16
+R-36 / Cyclone,R-36O 8K69M,2
+R-36 / Cyclone,Tsiklon-2,105
+R-36 / Cyclone,Tsiklon-2A,8
+R-36 / Cyclone,Tsiklon-3,122
+Rokot,Rokot,32
+Saturn V,Saturn V,3
+Scout,Scout A,11
+Scout,Scout A-1,1
+Scout,Scout B,20
+Scout,Scout B-1,5
+Scout,Scout D-1,15
+Scout,Scout E-1,1
+Scout,Scout F-1,2
+Scout,Scout G-1,17
+Scout,Scout X-1,4
+Scout,Scout X-2,1
+Scout,Scout X-2B,1
+Scout,Scout X-2M,3
+Scout,Scout X-3,5
+Scout,Scout X-3M,1
+Scout,Scout X-4,12
+Shavit,Shavit,2
+Shavit,Shavit 1,4
+Shavit,Shavit 2,7
+Shian Quxian,Shuang Quxian 1,8
+Shtil,Shtil'-1,2
+Soyuz,Soyuz 11A511,32
+Soyuz,Soyuz 11A511L,3
+Soyuz,Soyuz 11A511M,8
+Soyuz,Soyuz-2-1A,82
+Soyuz,Soyuz-2-1B,87
+Soyuz,Soyuz-2-1V,13
+Soyuz,Soyuz-FG,68
+Soyuz,Soyuz-ST-A,9
+Soyuz,Soyuz-ST-B,18
+Soyuz,Soyuz-U,633
+Soyuz,Soyuz-U-PVB,154
+Soyuz,Soyuz-U2,72
+Space Shuttle,Space Shuttle,137
+Start,Start,1
+Start,Start-1,5
+Start,Start-1.2,1
+Strela,Strela,3
+Taurus,Taurus 1110,1
+Taurus,Taurus 2110,2
+Taurus,Taurus 2210,1
+Taurus,Taurus 3110,2
+Taurus,Taurus 3210,1
+Titan II,Titan II GLV,12
+Titan II,Titan II SLV,12
+Titan III+,Titan 23B,9
+Titan III+,Titan 24B,23
+Titan III+,Titan 33B,3
+Titan III+,Titan 34B,11
+Titan III+,Titan 34D,7
+Titan III+,Titan 34D/IUS,1
+Titan III+,Titan 34D/Transtage,7
+Titan III+,Titan IIIA,4
+Titan III+,Titan IIIB,22
+Titan III+,Titan IIIC,36
+Titan III+,Titan IIID,22
+Titan III+,Titan IIIE,1
+Titan IV,Titan 401A/Centaur,9
+Titan IV,Titan 401B/Centaur,6
+Titan IV,Titan 402A/IUS,3
+Titan IV,Titan 402B/IUS,5
+Titan IV,Titan 403A,5
+Titan IV,Titan 403B,1
+Titan IV,Titan 404A,3
+Titan IV,Titan 404B,3
+Titan IV,Titan 405A,2
+Titan IV,Titan 405B,1
+Vega,Vega,21
+Zenit 2,Zenit-2,35
+Zenit 2,Zenit-2 11K77.05,1
+Zenit 2,Zenit-2M,1
+Zenit 2,Zenit-2SB,1
+Zenit 3SL,Zenit-3SL,36
+Zenit 3SL,Zenit-3SLB,6
+Zenit 3SL,Zenit-3SLBF,4

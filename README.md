@@ -50,3 +50,35 @@ python3 -m venv .venv
 서울특별시 보건환경연구원, [서울시 감염병매개 모기 개체수 및 종별 분류 결과](https://data.seoul.go.kr/dataList/OA-22301/F/1/datasetView.do), 공공누리 제1유형(출처표시). 기상자료는 [기상청 API허브 종관기상관측(ASOS)](https://apihub.kma.go.kr/apiList.do?seqApi=2)의 서울(108) 일자료다. 출처와 재수집 방법은 `data/raw/sources.json`에 기록했다.
 
 한글 글꼴은 Google Fonts에서 배포하는 Nanum Gothic이다. 재배포 조건은 `assets/OFL.txt`를 참고한다.
+
+## 추가 작업: 발표자료와 우주 발사 분석
+
+### 모기 분석 추가 그래프 (`analysis.py`)
+
+| 파일 | 내용 |
+|---|---|
+| images/07_mosquito_rainfall_timeline.png | 같은 달의 모기 관측량과 강수량 |
+| images/08_dataset_overview.png | 원본 엑셀 일부와 연도·월별 기록 유무 (4~11월만 채집) |
+| images/09_mosquito_temperature_spans.png | 기온과 같이/따로 움직인 구간 표시 |
+| images/10_mosquito_rainfall_spans.png | 강수량과 같이/따로 움직인 구간 표시 |
+| images/11_peak_shift.png | 해마다 가장 많았던 달, 가을÷여름 비율 |
+
+### 우주 발사 분석 (`space/`)
+
+"발사가 늘고 비용이 줄었다면, 사람도 우주에 많이 가고 있을까?"를 확인한다.
+
+```
+cd space
+python collect_data.py    # 원자료 다시 받기 (data/raw 에 이미 포함, 선택)
+python analysis.py        # 집계표와 그래프 생성, 끝에 발표용 요약 출력
+```
+
+- 발사·유인비행: Jonathan McDowell, GCAT 발사 목록과 유인비행 목록 (planet4589.org, 2026.11.9 갱신)
+- 발사 비용: Our World in Data / CSIS Aerospace Security Project, 로켓별 저궤도 1kg당 비용 (2021년 달러)
+- 출처와 받은 시각은 `space/data/raw/sources.json`에 기록했다.
+
+### 발표자료 (`slides/`)
+
+- `2시간데이터분석맛보기_v5.pptx` ~ `v10.pptx`: 버전별 발표자료. 최신은 v10
+- `발표대본_v10.md`: v10 기준 페이지별 발표 대본과 데이터 출처
+- `space/build_slides.py`(v5에서 새로 만들기), `space/patch_deck.py`(직접 고친 파일 위에 일부만 수정)로 슬라이드를 만들었다.

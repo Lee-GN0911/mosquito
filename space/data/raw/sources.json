@@ -1,0 +1,26 @@
+{
+  "launch.tsv": {
+    "url": "https://planet4589.org/space/gcat/tsv/launch/launch.tsv",
+    "name": "GCAT 발사 목록 (Jonathan McDowell)",
+    "note": "1942년 이후 모든 로켓 발사. LaunchCode 첫 글자 O = 궤도 발사",
+    "downloaded_utc": "2026-11-11T16:52:31+00:00"
+  },
+  "missions.tsv": {
+    "url": "https://planet4589.org/space/astro/tsv/missions.tsv",
+    "name": "유인 우주비행 임무 목록 (Jonathan McDowell)",
+    "note": "80km 이상 도달한 유인비행. OrbID가 ORB = 궤도, SO = 준궤도",
+    "downloaded_utc": "2026-11-11T16:52:32+00:00"
+  },
+  "rides.tsv": {
+    "url": "https://planet4589.org/space/astro/tsv/rides.tsv",
+    "name": "유인 우주비행 탑승자 목록 (Jonathan McDowell)",
+    "note": "한 사람이 한 번 비행할 때마다 한 줄",
+    "downloaded_utc": "2026-11-11T16:52:34+00:00"
+  },
+  "owid_launch_cost.csv": {
+    "url": "https://ourworldindata.org/grapher/cost-space-launches-low-earth-orbit.csv?v=1&csvType=full&useColumnShortNames=false",
+    "name": "저궤도 발사 비용 (Our World in Data, 원자료 CSIS Aerospace Security)",
+    "note": "로켓별 kg당 비용, 2021년 미국 달러 기준, 첫 성공 발사 연도",
+    "downloaded_utc": "2026-11-11T16:52:34+00:00"
+  }
+}
